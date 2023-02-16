@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-import { getPopularMovies } from "../../helper/popularFetch";
+import { getPopularMovies } from "../../helper";
 import ScrollContainer from "react-indiana-drag-scroll";
 import "react-indiana-drag-scroll/dist/style.css";
 
@@ -18,6 +18,7 @@ export default function Home(props) {
       rate={item.vote_average}
       imgPath={item.poster_path}
       genre="its will be ok"
+      id={item.id}
     />
   ));
   return (
@@ -35,7 +36,7 @@ export default function Home(props) {
           <div className="m-2 flex-1">
             <h3 className="">Popular</h3>
 
-            <ScrollContainer className="flex gap-2 items-start h-auto overflow-x-scroll w-[100vw]	">
+            <ScrollContainer className="flex gap-4 items-start h-auto overflow-x-scroll w-[100vw]	">
               {popularElements}
             </ScrollContainer>
           </div>

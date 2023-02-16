@@ -94,10 +94,12 @@ export default MovieDetail;
 export const getServerSideProps = async (context) => {
   const { params } = context;
   const movieId = params.id;
-  try {
-    const detail = await getMovieDetail(movieId);
-    const similars = await getSimilarMovies(movieId);
-    const creadits = await getMovieCast(movieId);
+
+  const detail = await getMovieDetail(movieId);
+  const similars = await getSimilarMovies(movieId);
+  const creadits = await getMovieCast(movieId);
+
+  if (detail) {
     return {
       props: {
         detail,
@@ -105,7 +107,11 @@ export const getServerSideProps = async (context) => {
         creadits,
       },
     };
-  } catch (error) {
-    console.error(error);
+  } else {
+    return {
+      redirect: {
+        destination: "/no-data",
+      },
+    };
   }
 };

@@ -4,10 +4,12 @@ import {
   getMovieCast,
 } from "../../../helper";
 
+import Head from "next/head";
 import Image from "next/image";
 import Card from "@/components/movieDetail/card";
 import ScrollContainer from "react-indiana-drag-scroll";
 import "react-indiana-drag-scroll/dist/style.css";
+import Link from "next/link";
 
 const MovieDetail = ({ detail, similars, creadits }) => {
   const genres = detail.genres.map((item) => <p key={item.id}>{item.name}</p>);
@@ -19,15 +21,27 @@ const MovieDetail = ({ detail, similars, creadits }) => {
   ));
   const director = creadits.crew
     .filter((item) => item.job === "Director")
-    .map((item) => <span key={item.id}>{item.name}</span>);
+    .map((item) => (
+      <Link key={item.id} href={`/person/${item.id}`}>
+        <span>{item.name}</span>
+      </Link>
+    ));
 
   const cinematograph = creadits.crew
     .filter((item) => item.job === "Director of Photography")
-    .map((item) => <span key={item.id}>{item.name}</span>);
+    .map((item) => (
+      <Link key={item.id} href={`/person/${item.id}`}>
+        <span>{item.name}</span>
+      </Link>
+    ));
 
   const producer = creadits.crew
     .filter((item) => item.job === "Producer")
-    .map((item) => <span key={item.id}>{item.name}</span>);
+    .map((item) => (
+      <Link key={item.id} href={`/person/${item.id}`}>
+        <span>{item.name}</span>
+      </Link>
+    ));
 
   const similarCards = similars.map((item) => (
     <Card
@@ -42,14 +56,17 @@ const MovieDetail = ({ detail, similars, creadits }) => {
   ));
 
   const castElements = creadits.cast.map((item) => (
-    <div key={item.id}>
+    <Link key={item.id} href={`/person/${item.id}`}>
       <span>{item.name}</span>
       <span>{item.character}</span>
-    </div>
+    </Link>
   ));
 
   return (
     <div>
+      <Head>
+        <title>{detail.title}</title>
+      </Head>
       {detail.backdrop_path ? (
         <Image
           src={`https://image.tmdb.org/t/p/original/${detail.backdrop_path}`}
@@ -69,9 +86,11 @@ const MovieDetail = ({ detail, similars, creadits }) => {
         priority
       />
       <p>{detail.title}</p>
+
       <p>{director}</p>
+
       <p>{cinematograph}</p>
-      <p>Producer</p>
+      <p>{producer}</p>
       <div>{genres}</div>
       <p>{detail.overview}</p>
       <div>{coutnries}</div>
@@ -99,7 +118,7 @@ export const getServerSideProps = async (context) => {
   const similars = await getSimilarMovies(movieId);
   const creadits = await getMovieCast(movieId);
 
-  if (detail) {
+  if (detail && creadits) {
     return {
       props: {
         detail,
